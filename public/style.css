@@ -138,7 +138,38 @@ li { margin-bottom: 0.4rem; }
   border-radius: 4px;
   margin-top: 1rem;
 }
+.counter { margin: 1rem 0 0; color: var(--muted); font-size: 0.9rem; min-height: 1.3rem; }
+.note { color: var(--muted); font-size: 0.95rem; margin-top: 1rem; }
 [hidden] { display: none !important; }
+
+/* ---------- Extra content blocks ---------- */
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { position: relative; padding-left: 1.6rem; }
+.checklist li::before { content: "\2713"; position: absolute; left: 0; color: var(--brand); font-weight: 700; }
+
+.example {
+  background: #fff7ed;
+  border-left: 4px solid var(--brand);
+  border-radius: 4px;
+  padding: 0.9rem 1.1rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.callout {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--brand);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-top: 2rem;
+}
+.callout h3 { margin: 0 0 0.4rem; }
+.callout p { margin: 0; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; background: var(--card-bg); font-size: 0.95rem; }
+th, td { border: 1px solid var(--line); padding: 0.5rem 0.7rem; text-align: left; }
+th { background: var(--side-bg); color: #fff; }
 
 /* ---------- Footer ---------- */
 .site-footer {
