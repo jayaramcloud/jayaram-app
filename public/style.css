@@ -60,6 +60,8 @@ body {
   cursor: pointer;
 }
 .nav-btn:hover { background: rgba(255, 255, 255, 0.08); }
+a.nav-link { display: block; text-decoration: none; margin-top: 0.75rem; border: 1px solid var(--brand); color: var(--brand); }
+a.nav-link:hover { background: var(--brand); color: #fff; }
 .nav-btn.active {
   background: var(--brand);
   border-left-color: #fff;

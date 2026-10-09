@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask the AI Career Coach | Jayaram</title>
+  <meta name="description" content="Ask the AI career coach anything about resumes, interviews, job search and career changes.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ask.css">
+</head>
+<body class="ask-page">
+  <div class="layout">
+
+    <nav class="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <span class="brand-name">Jayaram</span>
+        <span class="brand-tag">Job &amp; Interview Training</span>
+      </div>
+      <a class="nav-btn" href="/#home">Home</a>
+      <a class="nav-btn" href="/#resume">Resume &amp; Profile</a>
+      <a class="nav-btn" href="/#prep">Interview Prep</a>
+      <a class="nav-btn" href="/#practice">Practice Questions</a>
+      <a class="nav-btn" href="/#search">Job Search</a>
+      <a class="nav-btn active" href="/ask.html" aria-current="page">Ask the AI</a>
+    </nav>
+
+    <main class="content chat-content">
+      <h1>Ask the AI Career Coach</h1>
+      <p class="lead">Ask about resumes, interviews, job hunting, salary, or changing careers. Follow-up questions are welcome.</p>
+
+      <div class="suggestions" id="suggestions" aria-label="Example questions">
+        <button type="button" class="chip">How do I answer "Tell me about yourself"?</button>
+        <button type="button" class="chip">How can I explain a gap in my resume?</button>
+        <button type="button" class="chip">What should I prepare for a DevOps interview?</button>
+        <button type="button" class="chip">How do I negotiate a higher salary?</button>
+        <button type="button" class="chip">I am changing careers. Where do I start?</button>
+      </div>
+
+      <div class="chat" id="chat" role="log" aria-live="polite" aria-label="Conversation">
+        <div class="msg bot">Hi! I am an AI career coach. What would you like help with today?</div>
+      </div>
+
+      <form class="composer" id="composer">
+        <label for="msg" class="sr-only">Your question</label>
+        <textarea id="msg" rows="2" maxlength="600" placeholder="Type your question here. Press Enter to send, Shift+Enter for a new line."></textarea>
+        <div class="composer-row">
+          <span class="ai-count" id="count">0 / 600</span>
+          <button type="button" class="action-btn alt" id="clear">New conversation</button>
+          <button type="submit" class="action-btn" id="send">Send</button>
+        </div>
+      </form>
+
+      <p class="note">Answers come from an AI and can be wrong, so double-check anything important. Your questions are sent to an AI service, so please do not include personal or sensitive details such as passwords, ID numbers or bank information. Conversations are not saved on this site.</p>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>Jayaram: help and training for job seekers.</p>
+  </footer>
+
+  <script src="ask.js"></script>
+</body>
+</html>

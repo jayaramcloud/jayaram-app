@@ -7,10 +7,12 @@ const MAX_OUTPUT_TOKENS = 450;
 const RATE_LIMIT = 8;            // questions per visitor...
 const RATE_WINDOW_SEC = 600;     // ...per 10 minutes
 const DAILY_CAP = 300;           // total questions per day across all visitors (spend guard)
+const MAX_HISTORY_MESSAGES = 6;  // earlier turns kept for follow-up questions
+const MAX_HISTORY_CHARS = 1500;  // per earlier message
 
 const SYSTEM_PROMPT = [
   "You are a friendly, practical career coach on a website that helps people find jobs and prepare for interviews.",
-  "Help with: resumes, cover letters, interview preparation and practice, job search strategy, networking, salary negotiation, and career changes (including IT, QA, DevOps and security roles).",
+  "Help with: resumes, cover letters, interview preparation and practice, job search strategy, networking, salary negotiation, workplace and career questions, learning paths and skills, and career changes (including IT, QA, DevOps and security roles). You may explain technical concepts when they help someone prepare for an interview or a job.",
   "Keep answers short and concrete: under about 250 words, plain language, short paragraphs or a few bullets.",
   "If asked something unrelated to careers, jobs or interviews, politely say you can only help with job search and interview topics.",
   "Do not give legal, medical or financial advice beyond general career guidance, and say when someone should consult a professional.",
@@ -59,6 +61,30 @@ async function ask(request, env) {
     return json({ error: `Please keep your question under ${MAX_QUESTION_CHARS} characters.` }, 400);
   }
 
+  // Optional earlier turns so follow-up questions work: [{role:"user"|"assistant", content:"..."}].
+  // Validated and trimmed hard so a visitor cannot send a huge or malformed history.
+  const history = [];
+  if (data.history !== undefined) {
+    if (!Array.isArray(data.history)) return json({ error: "Invalid request." }, 400);
+    for (const m of data.history.slice(-MAX_HISTORY_MESSAGES)) {
+      if (!m || (m.role !== "user" && m.role !== "assistant") || typeof m.content !== "string") {
+        return json({ error: "Invalid request." }, 400);
+      }
+      const content = m.content.trim().slice(0, MAX_HISTORY_CHARS);
+      if (content) history.push({ role: m.role, content });
+    }
+    // The API needs the first message to be from the user and roles to alternate.
+    while (history.length && history[0].role !== "user") history.shift();
+    const clean = [];
+    for (const m of history) {
+      if (clean.length && clean[clean.length - 1].role === m.role) clean[clean.length - 1] = m;
+      else clean.push(m);
+    }
+    if (clean.length && clean[clean.length - 1].role === "user") clean.pop();
+    history.length = 0;
+    history.push(...clean);
+  }
+
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
   const blocked = allowed(ip);
   if (blocked === "rate") {
@@ -81,7 +107,7 @@ async function ask(request, env) {
         model: env.CLAUDE_MODEL || "claude-haiku-5-5",
         max_tokens: MAX_OUTPUT_TOKENS,
         system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: question }],
+        messages: [...history, { role: "user", content: question }],
       }),
     });
   } catch {

@@ -1,7 +1,7 @@
 // Runs in the visitor's browser.
 
 // ---------- Left navigation: show one panel at a time ----------
-const navButtons = document.querySelectorAll(".nav-btn");
+const navButtons = document.querySelectorAll("button.nav-btn");
 const panels = document.querySelectorAll(".panel");
 
 function showPanel(id) {

@@ -39,9 +39,13 @@ the Claude API. **The API key is never stored in this repo.** It is a Worker sec
 npx wrangler secret put ANTHROPIC_API_KEY   # paste the key when prompted
 ```
 
+There are two places to ask: the small box on Practice Questions, and the full chat page
+**`/ask.html`** (`public/ask.html`, `ask.css`, `ask.js`) with example questions and follow-up
+conversation. Conversations are kept only in the visitor's browser memory.
+
 Until the secret is set, the box shows "The AI helper is not switched on yet."
 Model is set by `CLAUDE_MODEL` in `wrangler.jsonc`. Built-in limits: 600 characters per question,
-450 output tokens, 8 questions per visitor per 10 minutes, 300 questions per day. Also set a monthly
+450 output tokens, last 6 messages of context, 8 questions per visitor per 10 minutes, 300 questions per day. Also set a monthly
 spend limit on the key in the Anthropic console.
 
 Optional local preview: `npx wrangler dev` (needs Node.js).
