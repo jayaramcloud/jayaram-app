@@ -1,8 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "jayaram-app",
+  "main": "src/worker.js",
   "compatibility_date": "2026-08-08",
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "CLAUDE_MODEL": "claude-haiku-5-5"
   }
 }

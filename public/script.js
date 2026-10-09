@@ -153,3 +153,47 @@ document.getElementById("q-general").addEventListener("click", () => pick("gener
 document.getElementById("q-tech").addEventListener("click", () => pick("tech"));
 document.getElementById("q-ask").addEventListener("click", () => pick("ask"));
 tipBtn.addEventListener("click", () => { tipEl.hidden = !tipEl.hidden; });
+
+// ---------- Ask the AI career coach ----------
+// Calls /api/ask on this same site. The Anthropic key lives on the server (Cloudflare Worker),
+// never in this file.
+const aiInput = document.getElementById("ai-input");
+const aiSend = document.getElementById("ai-send");
+const aiAnswer = document.getElementById("ai-answer");
+const aiCount = document.getElementById("ai-count");
+
+aiInput.addEventListener("input", () => {
+  aiCount.textContent = aiInput.value.length + " / 600";
+});
+
+function showAnswer(text, isError) {
+  aiAnswer.textContent = text;
+  aiAnswer.hidden = false;
+  aiAnswer.classList.toggle("error", !!isError);
+}
+
+async function askAI() {
+  const question = aiInput.value.trim();
+  if (!question) { showAnswer("Please type a question first.", true); return; }
+  aiSend.disabled = true;
+  showAnswer("Thinking...", false);
+  try {
+    const res = await fetch("/api/ask", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.answer) showAnswer(data.answer, false);
+    else showAnswer(data.error || "Something went wrong. Please try again.", true);
+  } catch (e) {
+    showAnswer("Could not connect. Check your internet and try again.", true);
+  } finally {
+    aiSend.disabled = false;
+  }
+}
+
+aiSend.addEventListener("click", askAI);
+aiInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) askAI();
+});

@@ -30,6 +30,20 @@ cd jayaram-app
 git add -A && git commit -m "my change" && git push
 ```
 
+## AI career coach ("Ask the AI" box on Practice Questions)
+
+The box calls `POST /api/ask`, handled by the Cloudflare Worker in `src/worker.js`, which calls
+the Claude API. **The API key is never stored in this repo.** It is a Worker secret:
+
+```bash
+npx wrangler secret put ANTHROPIC_API_KEY   # paste the key when prompted
+```
+
+Until the secret is set, the box shows "The AI helper is not switched on yet."
+Model is set by `CLAUDE_MODEL` in `wrangler.jsonc`. Built-in limits: 600 characters per question,
+450 output tokens, 8 questions per visitor per 10 minutes, 300 questions per day. Also set a monthly
+spend limit on the key in the Anthropic console.
+
 Optional local preview: `npx wrangler dev` (needs Node.js).
 
 Never commit passwords, tokens or API keys: this repo is public.

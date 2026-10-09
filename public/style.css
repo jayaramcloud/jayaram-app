@@ -142,6 +142,38 @@ li { margin-bottom: 0.4rem; }
 .note { color: var(--muted); font-size: 0.95rem; margin-top: 1rem; }
 [hidden] { display: none !important; }
 
+/* ---------- AI career coach ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ai-box {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--brand);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-top: 2rem;
+}
+.ai-box h2 { margin-top: 0; }
+.ai-box textarea {
+  width: 100%;
+  font: inherit;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  resize: vertical;
+}
+.ai-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.6rem; }
+.ai-count { color: var(--muted); font-size: 0.85rem; }
+.action-btn:disabled { opacity: 0.6; cursor: wait; }
+.ai-answer {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: #fff7ed;
+  border-left: 4px solid var(--brand);
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+.ai-answer.error { background: #fef2f2; border-left-color: #dc2626; }
+
 /* ---------- Extra content blocks ---------- */
 .checklist { list-style: none; padding-left: 0; }
 .checklist li { position: relative; padding-left: 1.6rem; }
