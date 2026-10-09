@@ -1,24 +1,166 @@
-body {
-  font-family: system-ui, sans-serif;
-  max-width: 640px;
-  margin: 3rem auto;
-  padding: 0 1rem;
-  line-height: 1.6;
-  color: #222;
+:root {
+  --brand: #f6821f;
+  --brand-dark: #d96d10;
+  --ink: #222;
+  --muted: #5b6470;
+  --side-bg: #1f2937;
+  --side-ink: #e5e7eb;
+  --page-bg: #f7f8fa;
+  --card-bg: #ffffff;
+  --line: #e3e6ea;
 }
 
-h1 { color: #f6821f; }
+* { box-sizing: border-box; }
 
-button {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--page-bg);
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Left navigation ---------- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background: var(--side-bg);
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  padding: 0 0.25rem;
+}
+.brand-name { color: #fff; font-size: 1.5rem; font-weight: 700; }
+.brand-tag { color: var(--brand); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.nav-btn {
+  font: inherit;
+  text-align: left;
+  padding: 0.75rem 1rem;
   border: 0;
+  border-left: 4px solid transparent;
   border-radius: 6px;
-  background: #f6821f;
-  color: white;
+  background: transparent;
+  color: var(--side-ink);
   cursor: pointer;
 }
+.nav-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.nav-btn.active {
+  background: var(--brand);
+  border-left-color: #fff;
+  color: #fff;
+  font-weight: 600;
+}
+.nav-btn:focus-visible,
+.action-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 5px var(--brand-dark); }
 
-button:hover { background: #d96d10; }
+/* ---------- Content ---------- */
+.content {
+  margin-left: 240px;
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 960px;
+}
 
-code { background: #f2f2f2; padding: 2px 6px; border-radius: 4px; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+h1 { color: var(--brand); margin-top: 0; line-height: 1.2; }
+h2 { margin-top: 2rem; }
+.lead { font-size: 1.15rem; color: var(--muted); }
+
+ul { padding-left: 1.25rem; }
+li { margin-bottom: 0.4rem; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--brand);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+}
+.card h3 { margin: 0 0 0.4rem; }
+.card p { margin: 0; color: var(--muted); }
+
+/* ---------- Practice ---------- */
+.practice-box {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.practice-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.action-btn {
+  font: inherit;
+  padding: 0.55rem 1rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--brand);
+  color: #fff;
+  cursor: pointer;
+}
+.action-btn:hover { background: var(--brand-dark); }
+.action-btn.alt { background: var(--side-bg); }
+.action-btn.alt:hover { background: #374151; }
+
+.question {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 1.25rem 0 1rem;
+  min-height: 3.5rem;
+}
+.tip {
+  background: #fff7ed;
+  border-left: 4px solid var(--brand);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+[hidden] { display: none !important; }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  margin-left: 240px;
+  padding: 1.5rem 3rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+.site-footer p { margin: 0; }
+
+/* ---------- Phones and narrow windows ---------- */
+@media (max-width: 720px) {
+  .layout { flex-direction: column; }
+  .sidebar {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.75rem;
+  }
+  .brand { width: 100%; margin-bottom: 0.25rem; }
+  .nav-btn { border-left: 0; padding: 0.5rem 0.75rem; flex: 1 1 auto; text-align: center; }
+  .content { margin-left: 0; padding: 1.5rem 1rem; }
+  .site-footer { margin-left: 0; padding: 1rem; }
+}

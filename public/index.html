@@ -3,23 +3,124 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>jayaram's site</title>
+  <title>Jayaram | Job Search &amp; Interview Training</title>
+  <meta name="description" content="Free help and training for job seekers: resumes, interview preparation, practice questions and job search strategy.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Hello from jayaram!</h1>
-    <p>This is my first website. It lives on GitHub and is published automatically.</p>
-  </header>
+  <div class="layout">
 
-  <main>
-    <h2>Try it</h2>
-    <button id="greet">Click me</button>
-    <p id="message"></p>
-  </main>
+    <nav class="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <span class="brand-name">Jayaram</span>
+        <span class="brand-tag">Job &amp; Interview Training</span>
+      </div>
+      <button class="nav-btn active" data-target="home">Home</button>
+      <button class="nav-btn" data-target="resume">Resume &amp; Profile</button>
+      <button class="nav-btn" data-target="prep">Interview Prep</button>
+      <button class="nav-btn" data-target="practice">Practice Questions</button>
+      <button class="nav-btn" data-target="search">Job Search</button>
+    </nav>
 
-  <footer>
-    <p>Edit <code>public/index.html</code>, <code>public/style.css</code> and <code>public/script.js</code>, then push to GitHub.</p>
+    <main class="content">
+
+      <section id="home" class="panel active">
+        <h1>Land the job you are preparing for</h1>
+        <p class="lead">Practical help and training for people looking for work and getting ready for interviews. Use the buttons on the left to move around.</p>
+        <div class="cards">
+          <div class="card"><h3>1. Build</h3><p>Write a clear resume and a profile that gets noticed.</p></div>
+          <div class="card"><h3>2. Prepare</h3><p>Learn how interviews work and how to tell your story.</p></div>
+          <div class="card"><h3>3. Practice</h3><p>Rehearse real questions out loud until you are calm and confident.</p></div>
+          <div class="card"><h3>4. Search</h3><p>Find the right roles and follow up the smart way.</p></div>
+        </div>
+      </section>
+
+      <section id="resume" class="panel">
+        <h1>Resume &amp; Profile</h1>
+        <p class="lead">A recruiter spends under a minute on your resume. Make that minute count.</p>
+        <h2>Resume checklist</h2>
+        <ul>
+          <li>One or two pages, simple layout, readable font.</li>
+          <li>A short summary at the top: who you are, what you do, what you want next.</li>
+          <li>Bullets that show results: <em>"Cut report time from 4 hours to 30 minutes"</em> beats <em>"Responsible for reports"</em>.</li>
+          <li>Keywords from the job posting, used honestly, so applicant tracking systems can find you.</li>
+          <li>No typos. Read it aloud, then ask a friend to read it.</li>
+        </ul>
+        <h2>Online profile</h2>
+        <ul>
+          <li>Use a clear, friendly photo and a headline that says what you do.</li>
+          <li>Match your profile to your resume: same titles, same dates.</li>
+          <li>Ask former colleagues or managers for short recommendations.</li>
+        </ul>
+      </section>
+
+      <section id="prep" class="panel">
+        <h1>Interview Prep</h1>
+        <p class="lead">Good preparation turns nerves into confidence.</p>
+        <h2>Before the interview</h2>
+        <ul>
+          <li>Research the company: what it does, who its customers are, recent news.</li>
+          <li>Re-read the job description and match it to your own examples.</li>
+          <li>Prepare three to five stories from your work. Use the STAR method below.</li>
+          <li>Prepare two or three thoughtful questions to ask them.</li>
+          <li>Test your camera, microphone and internet for video calls. Plan your route for in-person ones.</li>
+        </ul>
+        <h2>The STAR method</h2>
+        <div class="cards">
+          <div class="card"><h3>S: Situation</h3><p>Set the scene in one or two sentences.</p></div>
+          <div class="card"><h3>T: Task</h3><p>What was your responsibility or goal?</p></div>
+          <div class="card"><h3>A: Action</h3><p>What did <strong>you</strong> do, step by step?</p></div>
+          <div class="card"><h3>R: Result</h3><p>What changed? Use numbers if you can.</p></div>
+        </div>
+        <h2>After the interview</h2>
+        <ul>
+          <li>Send a short thank-you email within 24 hours.</li>
+          <li>Note what went well and what to improve for next time.</li>
+        </ul>
+      </section>
+
+      <section id="practice" class="panel">
+        <h1>Practice Questions</h1>
+        <p class="lead">Click a button to get a question. Answer it out loud first, then open the tip.</p>
+        <div class="practice-box">
+          <div class="practice-controls">
+            <button class="action-btn" id="q-any">Any question</button>
+            <button class="action-btn alt" id="q-behavioral">Behavioral</button>
+            <button class="action-btn alt" id="q-general">General</button>
+            <button class="action-btn alt" id="q-ask">Questions to ask them</button>
+          </div>
+          <p class="question" id="question">Press a button to get your first question.</p>
+          <button class="action-btn alt" id="show-tip" hidden>Show tip</button>
+          <p class="tip" id="tip" hidden></p>
+        </div>
+      </section>
+
+      <section id="search" class="panel">
+        <h1>Job Search</h1>
+        <p class="lead">A steady, organized search beats sending hundreds of random applications.</p>
+        <h2>A simple weekly plan</h2>
+        <ul>
+          <li>Set a target: for example 5 quality applications and 3 conversations per week.</li>
+          <li>Tailor your resume to each role instead of sending the same one everywhere.</li>
+          <li>Tell friends, family and former colleagues what you are looking for. Many jobs are filled by referral.</li>
+          <li>Track every application in a simple sheet: company, role, date, contact, next step.</li>
+          <li>Follow up politely after one week if you have not heard back.</li>
+        </ul>
+        <h2>Where to look</h2>
+        <ul>
+          <li>Company career pages for places you would like to work.</li>
+          <li>General job boards and professional networking sites.</li>
+          <li>Local job centers, community groups and career fairs.</li>
+        </ul>
+        <h2>Stay motivated</h2>
+        <p>Rejection is part of the process and says little about your worth. Keep learning, keep practicing, and celebrate small wins like every interview you complete.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>Jayaram: help and training for job seekers.</p>
   </footer>
 
   <script src="script.js"></script>
