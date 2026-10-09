@@ -166,8 +166,9 @@ aiInput.addEventListener("input", () => {
   aiCount.textContent = aiInput.value.length + " / 600";
 });
 
-function showAnswer(text, isError) {
-  aiAnswer.textContent = text;
+function showAnswer(text, isError, markdown) {
+  if (markdown && typeof renderMarkdown === "function") renderMarkdown(aiAnswer, text);
+  else aiAnswer.textContent = text;
   aiAnswer.hidden = false;
   aiAnswer.classList.toggle("error", !!isError);
 }
@@ -184,7 +185,7 @@ async function askAI() {
       body: JSON.stringify({ question }),
     });
     const data = await res.json().catch(() => ({}));
-    if (res.ok && data.answer) showAnswer(data.answer, false);
+    if (res.ok && data.answer) showAnswer(data.answer, false, true);
     else showAnswer(data.error || "Something went wrong. Please try again.", true);
   } catch (e) {
     showAnswer("Could not connect. Check your internet and try again.", true);

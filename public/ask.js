@@ -16,7 +16,9 @@ let busy = false;
 function addMsg(text, kind) {
   const el = document.createElement("div");
   el.className = "msg " + kind;
-  el.textContent = text;           // textContent, never innerHTML: replies cannot inject markup
+  // Bot replies get safe mini-markdown (bold, lists). Everything else stays plain text.
+  if (kind === "bot" && typeof renderMarkdown === "function") renderMarkdown(el, text);
+  else el.textContent = text;
   chat.appendChild(el);
   chat.scrollTop = chat.scrollHeight;
   return el;

@@ -175,6 +175,12 @@ li { margin-bottom: 0.4rem; }
   white-space: pre-wrap;
 }
 .ai-answer.error { background: #fef2f2; border-left-color: #dc2626; }
+/* Rendered AI replies (markdown.js builds <p>, <ul>, <ol>, <strong>, <em>) */
+.ai-answer { white-space: normal; }
+.ai-answer p { margin: 0 0 0.6rem; }
+.ai-answer ul, .ai-answer ol { margin: 0 0 0.6rem; padding-left: 1.3rem; }
+.ai-answer p:last-child, .ai-answer ul:last-child, .ai-answer ol:last-child { margin-bottom: 0; }
+
 
 /* ---------- Extra content blocks ---------- */
 .checklist { list-style: none; padding-left: 0; }

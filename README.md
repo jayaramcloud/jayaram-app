@@ -40,8 +40,8 @@ npx wrangler secret put ANTHROPIC_API_KEY   # paste the key when prompted
 ```
 
 There are two places to ask: the small box on Practice Questions, and the full chat page
-**`/ask.html`** (`public/ask.html`, `ask.css`, `ask.js`) with example questions and follow-up
-conversation. Conversations are kept only in the visitor's browser memory.
+**`/ask`** (`public/ask.html`, `ask.css`, `ask.js`) with example questions and follow-up
+conversation. Replies are shown with a small safe markdown renderer (`public/markdown.js`: bold, italic, lists; it builds DOM nodes and never uses `innerHTML`). Conversations are kept only in the visitor's browser memory.
 
 Until the secret is set, the box shows "The AI helper is not switched on yet."
 Model is set by `CLAUDE_MODEL` in `wrangler.jsonc`. Built-in limits: 600 characters per question,
