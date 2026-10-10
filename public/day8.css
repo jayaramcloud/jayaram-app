@@ -1,0 +1,118 @@
+/* Styles for the Day 8 page. Base styles come from style.css. */
+
+a.nav-btn { display: block; text-decoration: none; }
+a.nav-link.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+.day8-content { max-width: 980px; }
+.day8-content h2 { scroll-margin-top: 1rem; border-bottom: 2px solid var(--line); padding-bottom: 0.3rem; }
+.day8-content code {
+  background: #f2f2f2;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin: 1rem 0 0.5rem;
+}
+.toc a { color: var(--brand-dark); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+
+/* ---------- Diagram ---------- */
+.diagram {
+  margin: 1rem 0 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+.diagram svg { display: block; width: 100%; height: auto; }
+.diagram figcaption { color: var(--muted); font-size: 0.9rem; padding: 0.5rem 0.25rem 0; }
+
+.diagram .zone { fill: #f9fafb; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.diagram .zone-cf { fill: #fff7ed; stroke: #f6821f; }
+.diagram .zone-label { font: 700 13px system-ui, sans-serif; fill: #475569; letter-spacing: 0.08em; }
+.diagram .box { fill: #ffffff; stroke: #1f2937; stroke-width: 2; }
+.diagram .box-cf { stroke: #f6821f; }
+.diagram .box-ai { fill: #eef2ff; stroke: #4f46e5; }
+.diagram .secret { fill: #fef2f2; stroke: #dc2626; }
+.diagram .step { fill: #ffedd5; stroke: #fdba74; stroke-width: 1.5; }
+.diagram .box-title { font: 700 16px system-ui, sans-serif; fill: #111827; }
+.diagram .box-sub { font: 13px system-ui, sans-serif; fill: #475569; }
+.diagram .step-text { font: 13.5px system-ui, sans-serif; fill: #7c2d12; }
+.diagram .flow { fill: none; stroke-width: 3; }
+.diagram .flow-req { stroke: #f6821f; }
+.diagram .flow-res { stroke: #374151; }
+.diagram .flow-key { stroke: #dc2626; }
+.diagram .flow-static { stroke: #94a3b8; stroke-width: 2; stroke-dasharray: 5 4; }
+.diagram .flow-label { font: 700 13px system-ui, sans-serif; fill: #111827; paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+.diagram .deploy { fill: #ecfdf5; stroke: #10b981; stroke-width: 2; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+.legend .sw { display: inline-block; width: 26px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 0.35rem; }
+.sw-req { border-color: #f6821f; }
+.sw-res { border-color: #374151; }
+.sw-key { border-color: #dc2626; }
+.sw-static { border-top-style: dashed !important; border-color: #94a3b8; }
+
+/* ---------- Numbered walkthrough ---------- */
+.steps { padding-left: 1.25rem; }
+.steps li { margin-bottom: 0.7rem; }
+
+/* ---------- Build timeline ---------- */
+.timeline { display: flex; flex-direction: column; gap: 1rem; margin: 1rem 0; }
+.tl-item {
+  display: flex;
+  gap: 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--brand);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+}
+.tl-item > div { min-width: 0; flex: 1; }
+.tl-item h3 { margin: 0 0 0.3rem; }
+.tl-item p { margin: 0 0 0.5rem; }
+.tl-item p:last-child { margin-bottom: 0; }
+.tl-n {
+  flex: 0 0 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day8-content pre {
+  background: #1f2937;
+  color: #e5e7eb;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0.5rem 0;
+}
+.day8-content pre code { background: transparent; padding: 0; color: inherit; overflow-wrap: normal; font-size: inherit; }
+
+.swipe-hint { display: none; color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+
+@media (max-width: 720px) {
+  .swipe-hint { display: block; }
+  .tl-item { flex-direction: column; gap: 0.5rem; }
+  .toc { font-size: 0.9rem; }
+  .diagram { padding: 0.4rem; overflow-x: auto; }
+  .diagram svg { min-width: 720px; }
+}

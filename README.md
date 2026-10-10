@@ -48,6 +48,12 @@ Model is set by `CLAUDE_MODEL` in `wrangler.jsonc`. Built-in limits: 600 charact
 450 output tokens, last 6 messages of context, 8 questions per visitor per 10 minutes, 300 questions per day. Also set a monthly
 spend limit on the key in the Anthropic console.
 
+## Day 8 page (`/day8`)
+
+`public/day8.html` + `day8.css`: a guide to how the chatbot was built, with an SVG architecture
+diagram (browser, Cloudflare Worker, secret key, Claude API), a request walkthrough, build steps,
+safety controls and honest limits. Linked from the left menu as "Day 8: Chatbot".
+
 Optional local preview: `npx wrangler dev` (needs Node.js).
 
 Never commit passwords, tokens or API keys: this repo is public.

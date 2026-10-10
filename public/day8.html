@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 8: Build a Chatbot | Jayaram</title>
+  <meta name="description" content="How this site's AI chatbot was built: browser, Cloudflare Worker, secret API key and the Claude API, with a diagram and step-by-step guide.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="day8.css">
+</head>
+<body class="day8-page">
+  <div class="layout">
+
+    <nav class="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <span class="brand-name">Jayaram</span>
+        <span class="brand-tag">Job &amp; Interview Training</span>
+      </div>
+      <a class="nav-btn" href="/#home">Home</a>
+      <a class="nav-btn" href="/#resume">Resume &amp; Profile</a>
+      <a class="nav-btn" href="/#prep">Interview Prep</a>
+      <a class="nav-btn" href="/#practice">Practice Questions</a>
+      <a class="nav-btn" href="/#search">Job Search</a>
+      <a class="nav-btn nav-link" href="/ask">Ask the AI</a>
+      <a class="nav-btn nav-link active" href="/day8" aria-current="page">Day 8: Chatbot</a>
+    </nav>
+
+    <main class="content day8-content">
+      <h1>Day 8: Create a Chatbot</h1>
+      <p class="lead">This page explains how the AI career coach on this site works and how it was built, from the browser to the AI and back. You can follow the same steps to build your own.</p>
+
+      <nav class="toc" aria-label="On this page">
+        <strong>On this page:</strong>
+        <a href="#big-picture">Big picture</a>
+        <a href="#diagram">Diagram</a>
+        <a href="#walkthrough">Request walkthrough</a>
+        <a href="#build">Build steps</a>
+        <a href="#safety">Safety</a>
+        <a href="#try">Try it</a>
+        <a href="#limits">Limits and next steps</a>
+      </nav>
+
+      <h2 id="big-picture">The big picture</h2>
+      <p>A chatbot here is three parts working together:</p>
+      <div class="cards">
+        <div class="card"><h3>1. The page</h3><p>HTML, CSS and JavaScript in the visitor's browser. It shows the chat and sends each question to our own server.</p></div>
+        <div class="card"><h3>2. The Worker</h3><p>A small program on Cloudflare (<code>src/worker.js</code>). It checks the question, adds instructions, and calls the AI with a secret key.</p></div>
+        <div class="card"><h3>3. The AI model</h3><p>Claude, run by Anthropic. It reads the conversation and writes the answer.</p></div>
+      </div>
+      <p><strong>Golden rule:</strong> the browser never talks to the AI directly. If it did, the secret API key would have to be inside the web page, and anyone could copy it and spend your money. The Worker sits in the middle and keeps the key hidden.</p>
+
+      <h2 id="diagram">How it works (diagram)</h2>
+      <p class="swipe-hint">Tip: on a phone, swipe the diagram sideways to see all of it.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 980 560" role="img" aria-labelledby="d8-title d8-desc" xmlns="http://www.w3.org/2000/svg">
+          <title id="d8-title">Chatbot architecture</title>
+          <desc id="d8-desc">A visitor's browser sends a question to a Cloudflare Worker at /api/ask. The Worker validates and rate-limits the request, adds a system prompt and the secret API key, and calls the Claude API. The answer returns through the Worker to the browser, where it is rendered as safe markdown. Static files are served from the public folder. GitHub pushes deploy the site automatically.</desc>
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+            </marker>
+            <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#f6821f"/>
+            </marker>
+          </defs>
+
+          <!-- zones -->
+          <rect x="10" y="40" width="270" height="400" rx="14" class="zone"/>
+          <text x="145" y="30" class="zone-label" text-anchor="middle">VISITOR'S BROWSER</text>
+          <rect x="330" y="40" width="330" height="400" rx="14" class="zone zone-cf"/>
+          <text x="495" y="30" class="zone-label" text-anchor="middle">CLOUDFLARE (your site)</text>
+          <rect x="710" y="40" width="260" height="400" rx="14" class="zone"/>
+          <text x="840" y="30" class="zone-label" text-anchor="middle">ANTHROPIC</text>
+
+          <!-- browser boxes -->
+          <rect x="35" y="70" width="220" height="90" rx="10" class="box"/>
+          <text x="145" y="98" class="box-title" text-anchor="middle">Chat page</text>
+          <text x="145" y="120" class="box-sub" text-anchor="middle">ask.html + ask.js</text>
+          <text x="145" y="140" class="box-sub" text-anchor="middle">types question, shows reply</text>
+
+          <rect x="35" y="320" width="220" height="90" rx="10" class="box"/>
+          <text x="145" y="348" class="box-title" text-anchor="middle">markdown.js</text>
+          <text x="145" y="370" class="box-sub" text-anchor="middle">turns **bold** and lists</text>
+          <text x="145" y="390" class="box-sub" text-anchor="middle">into safe page elements</text>
+
+          <!-- worker boxes -->
+          <rect x="355" y="70" width="280" height="60" rx="10" class="box box-cf"/>
+          <text x="495" y="95" class="box-title" text-anchor="middle">Worker: POST /api/ask</text>
+          <text x="495" y="115" class="box-sub" text-anchor="middle">src/worker.js</text>
+
+          <rect x="355" y="150" width="280" height="42" rx="8" class="step"/>
+          <text x="495" y="176" class="step-text" text-anchor="middle">&#9312; Validate: JSON, max 600 characters</text>
+          <rect x="355" y="200" width="280" height="42" rx="8" class="step"/>
+          <text x="495" y="226" class="step-text" text-anchor="middle">&#9313; Rate limit (best effort)</text>
+          <rect x="355" y="250" width="280" height="42" rx="8" class="step"/>
+          <text x="495" y="276" class="step-text" text-anchor="middle">&#9314; Add system prompt + last 6 messages</text>
+          <rect x="355" y="300" width="280" height="42" rx="8" class="step"/>
+          <text x="495" y="326" class="step-text" text-anchor="middle">&#9315; Attach secret key, call Claude</text>
+
+          <rect x="355" y="365" width="145" height="60" rx="10" class="box secret"/>
+          <text x="427" y="391" class="box-title" text-anchor="middle">Secret</text>
+          <text x="427" y="411" class="box-sub" text-anchor="middle" font-size="12">ANTHROPIC_API_KEY</text>
+
+          <rect x="515" y="365" width="120" height="60" rx="10" class="box box-cf"/>
+          <text x="575" y="391" class="box-title" text-anchor="middle">public/ files</text>
+          <text x="575" y="411" class="box-sub" text-anchor="middle" font-size="12">sent to browser</text>
+
+          <!-- anthropic box -->
+          <rect x="735" y="120" width="210" height="150" rx="12" class="box box-ai"/>
+          <text x="840" y="152" class="box-title" text-anchor="middle">Claude API</text>
+          <text x="840" y="176" class="box-sub" text-anchor="middle">/v1/messages</text>
+          <text x="840" y="200" class="box-sub" text-anchor="middle">model: claude-haiku-5-5</text>
+          <text x="840" y="224" class="box-sub" text-anchor="middle">max 450 tokens per answer</text>
+          <text x="840" y="248" class="box-sub" text-anchor="middle">writes the reply</text>
+
+          <!-- arrows: request (orange) -->
+          <path d="M255,100 L355,100" class="flow flow-req" marker-end="url(#arrO)"/>
+          <text x="305" y="88" class="flow-label" text-anchor="middle">1 question</text>
+          <path d="M635,308 L685,308 L685,205 L735,205" class="flow flow-req" marker-end="url(#arrO)"/>
+          <text x="660" y="296" class="flow-label" text-anchor="middle">2 ask</text>
+
+          <!-- arrows: response (dark) -->
+          <path d="M735,255 L705,255 L705,333 L635,333" class="flow flow-res" marker-end="url(#arr)"/>
+          <text x="672" y="356" class="flow-label" text-anchor="middle">3 answer</text>
+          <path d="M355,115 L255,128" class="flow flow-res" marker-end="url(#arr)"/>
+          <text x="305" y="148" class="flow-label" text-anchor="middle">4 reply</text>
+          <path d="M145,160 L145,320" class="flow flow-res" marker-end="url(#arr)"/>
+          <text x="165" y="245" class="flow-label">5 render</text>
+
+          <!-- key link -->
+          <path d="M427,365 L427,345" class="flow flow-key" marker-end="url(#arr)"/>
+
+          <!-- deploy strip -->
+          <rect x="10" y="462" width="960" height="88" rx="12" class="deploy"/>
+          <text x="40" y="490" class="box-title">How it gets online</text>
+          <text x="40" y="520" class="box-sub">You edit files &#8594; git push to GitHub (jayaramcloud/jayaram-app) &#8594; Cloudflare builds and deploys the Worker and files</text>
+          <text x="40" y="538" class="box-sub">&#8594; live at jayaram.preparingforinterviews.com in about a minute.</text>
+        </svg>
+        <figcaption>Orange arrows are the question going out. Dark arrows are the answer coming back. The key never leaves the Cloudflare side. The <code>public/</code> files (the pages themselves) are served to the browser separately from the chat requests.</figcaption>
+      </figure>
+
+      <div class="legend">
+        <span><i class="sw sw-req"></i> Question going out</span>
+        <span><i class="sw sw-res"></i> Answer coming back</span>
+        <span><i class="sw sw-key"></i> Secret key stays on the server</span>
+      </div>
+
+      <h2 id="walkthrough">What happens when you press Send</h2>
+      <ol class="steps">
+        <li><strong>The page sends the question.</strong> <code>ask.js</code> posts JSON like <code>{"question": "...", "history": [...]}</code> to <code>/api/ask</code> on the same site. <em>history</em> holds the last few messages so follow-ups make sense.</li>
+        <li><strong>The Worker checks it.</strong> It must be valid JSON, a string, not empty and at most 600 characters. The history is trimmed to 6 messages of at most 1500 characters each and tidied so roles alternate user, assistant, user.</li>
+        <li><strong>The Worker adds instructions.</strong> A <em>system prompt</em> tells Claude to act as a short, practical career coach and to politely decline unrelated requests.</li>
+        <li><strong>The Worker calls Claude.</strong> It sends the messages to <code>https://api.anthropic.com/v1/messages</code> with the secret key in a header, the model name from <code>wrangler.jsonc</code> and a cap of 450 tokens.</li>
+        <li><strong>Claude answers.</strong> The Worker pulls the text out of the response and returns <code>{"answer": "..."}</code>. If anything fails, visitors see a friendly message, never raw error details.</li>
+        <li><strong>The page shows it.</strong> <code>markdown.js</code> turns <code>**bold**</code> and bullet lists into real page elements, using only safe DOM calls, never <code>innerHTML</code>.</li>
+      </ol>
+
+      <h2 id="build">How it was built, step by step</h2>
+      <div class="timeline">
+        <div class="tl-item"><span class="tl-n">1</span><div><h3>Start from a plain site</h3><p>A public GitHub repo with <code>public/index.html</code>, <code>style.css</code> and <code>script.js</code>, deployed as a Cloudflare Worker on <code>jayaram.preparingforinterviews.com</code>. No framework and no build step.</p></div></div>
+        <div class="tl-item"><span class="tl-n">2</span><div><h3>Create an API key</h3><p>In the Anthropic Console: add billing credit, set a monthly spend limit, then <em>API Keys &#8594; Create Key</em>. Copy it once. It starts with <code>sk-ant-</code>.</p></div></div>
+        <div class="tl-item"><span class="tl-n">3</span><div><h3>Store the key as a secret</h3><p>Never put it in the repo or the page. From a terminal:</p><pre><code>npx wrangler secret put ANTHROPIC_API_KEY</code></pre><p>Paste the key when asked. It is stored encrypted on Cloudflare and only the Worker can read it.</p></div></div>
+        <div class="tl-item"><span class="tl-n">4</span><div><h3>Add a Worker in front of the site</h3><p>Point <code>wrangler.jsonc</code> at the Worker and keep serving the static files:</p><pre><code>{
+  "name": "jayaram-app",
+  "main": "src/worker.js",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": { "CLAUDE_MODEL": "claude-haiku-5-5" }
+}</code></pre><p><code>run_worker_first</code> sends only <code>/api/*</code> requests to our code. Everything else is served straight from <code>public/</code>.</p></div></div>
+        <div class="tl-item"><span class="tl-n">5</span><div><h3>Write the Worker</h3><p>The heart of it is one <code>fetch</code> call. This is a simplified version of <code>src/worker.js</code>:</p><pre><code>const upstream = await fetch("https://api.anthropic.com/v1/messages", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    "x-api-key": env.ANTHROPIC_API_KEY,      // the secret
+    "anthropic-version": "2023-06-01"
+  },
+  body: JSON.stringify({
+    model: env.CLAUDE_MODEL,
+    max_tokens: 450,
+    system: SYSTEM_PROMPT,
+    messages: [...history, { role: "user", content: question }]
+  })
+});
+const result = await upstream.json();
+const answer = result.content.filter(b =&gt; b.type === "text")
+                             .map(b =&gt; b.text).join("\n");
+return Response.json({ answer });</code></pre></div></div>
+        <div class="tl-item"><span class="tl-n">6</span><div><h3>Build the chat page</h3><p><code>ask.html</code> has the message list, a text box and example question buttons. <code>ask.js</code> sends the question with <code>fetch("/api/ask")</code>, shows "Thinking...", then adds the reply. Enter sends, Shift+Enter makes a new line.</p></div></div>
+        <div class="tl-item"><span class="tl-n">7</span><div><h3>Make replies look right</h3><p>Claude writes in markdown. <code>markdown.js</code> converts bold, italics, headings and lists to page elements by creating them one by one, so a reply can never inject code into the page.</p></div></div>
+        <div class="tl-item"><span class="tl-n">8</span><div><h3>Test before going live</h3><p>The Worker was tested with a fake Anthropic server for: no key, bad input, too long, wrong method, upstream errors and follow-up history. The page scripts were tested against a stand-in page. Then a real question was sent to the live site.</p></div></div>
+        <div class="tl-item"><span class="tl-n">9</span><div><h3>Push to GitHub, go live</h3><p>Committing and pushing to <code>master</code> deploys automatically, usually in under a minute.</p><pre><code>git add -A
+git commit -m "Add AI chat"
+git push</code></pre></div></div>
+      </div>
+
+      <h2>Files in the project</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Runs where</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>src/worker.js</code></td><td>Cloudflare</td><td>Handles <code>/api/ask</code>: checks input, calls Claude, hides the key</td></tr>
+            <tr><td><code>wrangler.jsonc</code></td><td>Config</td><td>Names the Worker, static folder and model setting</td></tr>
+            <tr><td><code>public/ask.html</code>, <code>ask.js</code>, <code>ask.css</code></td><td>Browser</td><td>The full-page chat</td></tr>
+            <tr><td><code>public/markdown.js</code></td><td>Browser</td><td>Safe bold / list rendering for replies</td></tr>
+            <tr><td><code>public/script.js</code></td><td>Browser</td><td>Left menu, practice questions, small "Ask" box</td></tr>
+            <tr><td><code>public/day8.html</code>, <code>day8.css</code></td><td>Browser</td><td>This page</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="safety">Safety and cost controls</h2>
+      <ul class="checklist">
+        <li><strong>Secret key on the server.</strong> It is a Cloudflare secret, not in GitHub and not in any file the browser downloads.</li>
+        <li><strong>Spend limit.</strong> A monthly limit on the key in the Anthropic Console caps the worst case. This is the control that really matters.</li>
+        <li><strong>Small answers.</strong> 450 output tokens and a cheap, fast model keep each question to a fraction of a cent.</li>
+        <li><strong>Input limits.</strong> 600 characters per question, and only the last 6 messages of history are sent.</li>
+        <li><strong>On-topic prompt.</strong> The system prompt keeps Claude on careers and interviews and tells it to ignore instructions hidden inside a question.</li>
+        <li><strong>No raw errors.</strong> Failures log only a status code and show visitors a generic message.</li>
+        <li><strong>Safe display.</strong> Replies are drawn as text nodes, so HTML in an answer is shown as text and never runs.</li>
+        <li><strong>Privacy.</strong> Conversations are held in the browser only and are not saved by the site. The page warns users not to enter personal details.</li>
+      </ul>
+
+      <h2 id="try">Try it</h2>
+      <div class="callout">
+        <h3>Ask the chatbot you just read about</h3>
+        <p><a href="/ask"><strong>Open the AI career coach</strong></a> and try: <em>"How do I explain a gap in my resume?"</em> or a follow-up like <em>"Can you make that shorter?"</em></p>
+      </div>
+
+      <h2 id="limits">Honest limits and next steps</h2>
+      <ul>
+        <li><strong>The rate limit is only a speed bump.</strong> Its counters live in each Worker copy's memory, and Cloudflare runs many copies. In a live test, 10 quick requests from one address all succeeded when the limit was 8. A stronger version would use Cloudflare's rate-limiting rules or a Durable Object.</li>
+        <li><strong>The API key expires.</strong> The current key expires on Nov 8, 2026. Create a new one and run the <code>wrangler secret put</code> command again.</li>
+        <li><strong>AI can be wrong.</strong> Treat answers as guidance and double-check anything important.</li>
+        <li><strong>Ideas to extend it:</strong> stream the answer word by word, add a bot-check such as Cloudflare Turnstile, let users save a conversation, or add a mock-interview mode where the bot asks the questions.</li>
+      </ul>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>Jayaram: help and training for job seekers.</p>
+  </footer>
+</body>
+</html>

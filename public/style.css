@@ -232,6 +232,7 @@ th { background: var(--side-bg); color: #fff; }
   }
   .brand { width: 100%; margin-bottom: 0.25rem; }
   .nav-btn { border-left: 0; padding: 0.5rem 0.75rem; flex: 1 1 auto; text-align: center; }
+  a.nav-link { margin-top: 0; }
   .content { margin-left: 0; padding: 1.5rem 1rem; }
   .site-footer { margin-left: 0; padding: 1rem; }
 }
